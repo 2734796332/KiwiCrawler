@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="爬行状态">
+    <Position X="9.75" Y="7.75" Height="0.375" Width="0.877" />
+  </Comment>
+  <Comment CommentText="URL唯一标识">
+    <Position X="7.563" Y="8.167" Height="0.302" Width="1.367" />
+  </Comment>
+  <Comment CommentText="(1)URL信息,url属性传递给request&#xD;&#xA;(2)UrlQueue里存的就是UrlInfo">
+    <Position X="7.531" Y="10.042" Height="0.801" Width="1.783" />
+  </Comment>
+  <Comment CommentText="安全队列">
+    <Position X="5.469" Y="8.375" Height="0.29" Width="1.273" />
+  </Comment>
+  <Comment CommentText="URL队列，实例Instance是static&#xD;&#xA;">
+    <Position X="2.969" Y="9.052" Height="0.541" Width="1.752" />
+  </Comment>
+  <Comment CommentText="过滤器类">
+    <Position X="12.031" Y="6.98" Height="0.375" Width="0.887" />
+  </Comment>
+  <Comment CommentText="错误事件&#xD;&#xA;">
+    <Position X="9.74" Y="9.927" Height="0.29" Width="1.137" />
+  </Comment>
+  <Comment CommentText="爬虫设置">
+    <Position X="2.5" Y="2.75" Height="0.333" Width="1.231" />
+  </Comment>
+  <Comment CommentText="添加URL事件">
+    <Position X="9.5" Y="3" Height="0.385" Width="1.315" />
+  </Comment>
+  <Comment CommentText="收到数据后事件">
+    <Position X="12" Y="3" Height="0.385" Width="1.325" />
+  </Comment>
+  <Comment CommentText="（1）程序在于一静一动。静态布局，动态调用；动静相互转化。&#xD;&#xA;（2）方法：①引用参数的变身房。">
+    <Position X="9.188" Y="1.125" Height="1.083" Width="1.742" />
+  </Comment>
+  <Comment CommentText="Depth和Url来自UrlInfo">
+    <Position X="12.167" Y="4.76" Height="0.375" Width="1.7" />
+  </Comment>
+  <Comment CommentText="Depth = urlInfo.Depth + 1, Title = text,//来自超链接&#xD;&#xA;Url = url //来自超链接">
+    <Position X="9.427" Y="4.677" Height="0.688" Width="1.846" />
+  </Comment>
+  <Class Name="SimpleCrawler.AddUrlEventArgs">
+    <Position X="9.5" Y="5.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAgCAAAAAAAAAA=</HashCode>
+      <FileName>AddUrlEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SimpleCrawler.BloomFilter&lt;T&gt;">
+    <Position X="12" Y="7.5" Width="2" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="SimpleCrawler.BloomFilter&lt;T&gt;.HashFunction">
+        <TypeIdentifier>
+          <NewMemberFileName>BloomFilter.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>ACIAAAAAAEAAAAAAAABAAQAAAAEAEAAGQAAACAAQAAQ=</HashCode>
+      <FileName>BloomFilter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SimpleCrawler.CrawlErrorEventArgs">
+    <Position X="9.75" Y="11.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACABAAAAAAAA=</HashCode>
+      <FileName>CrawlErrorEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SimpleCrawler.CrawlExtension">
+    <Position X="7.5" Y="8.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CrawlExtension.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SimpleCrawler.CrawlMaster">
+    <Position X="5.75" Y="2" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>ABQCAAyAAAEAAQAAAAAAAAAAgAIEAAAAoAQABAAgABA=</HashCode>
+      <FileName>CrawlMaster.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SimpleCrawler.CrawlSettings">
+    <Position X="2.5" Y="3.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAgABIAAABSABAAAAAAAgAAAAAAAAYgAEACIBAAEAA=</HashCode>
+      <FileName>CrawlSettings.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SimpleCrawler.DataReceivedEventArgs">
+    <Position X="12" Y="5.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAABAAgCAAAAAAAAAA=</HashCode>
+      <FileName>DataReceivedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SimpleCrawler.SecurityQueue&lt;T&gt;">
+    <Position X="5" Y="8.75" Width="2" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="SimpleCrawler.SecurityQueue&lt;T&gt;.BeforeEnQueueEventHandler">
+        <TypeIdentifier>
+          <NewMemberFileName>SecurityQueue.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>ABBEAAAAAAoAAAAAABAAAAQABAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SecurityQueue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SimpleCrawler.UrlInfo">
+    <Position X="7.5" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAAAAIAAAgAAgAAAAAAAA=</HashCode>
+      <FileName>UrlInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SimpleCrawler.UrlQueue">
+    <Position X="3" Y="9.75" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="SimpleCrawler.UrlQueue.Nested">
+        <TypeIdentifier>
+          <NewMemberFileName>UrlQueue.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>UrlQueue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="SimpleCrawler.CrawlStatus">
+    <Position X="9.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CrawlStatus.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Delegate Name="SimpleCrawler.AddUrlEventHandler">
+    <Position X="9.5" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAA=</HashCode>
+      <FileName>AddUrlEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="SimpleCrawler.CrawlErrorEventHandler">
+    <Position X="9.75" Y="10.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CrawlErrorEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="SimpleCrawler.DataReceivedEventHandler">
+    <Position X="12" Y="3.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>DataReceivedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Font Name="微软雅黑" Size="9" />
+</ClassDiagram>
