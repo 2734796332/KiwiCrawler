@@ -14,6 +14,8 @@ namespace Test
 {
     internal class Program
     {
+        private static string logFilePath = AppDomain.CurrentDomain.BaseDirectory + @"\logFile\log.txt";
+
         [STAThread]
         private static void Main(string[] args)
         {
@@ -65,14 +67,99 @@ namespace Test
             //测试排列组合
 
             List<string> list = new List<string>();
+
+            list.Add("http://news.sdau.edu.cn/web_manage/index.php");
+            list.Add("http://news.sdau.edu.cn/tongji.php");
+            list.Add("http://news.sdau.edu.cn/");
+            list.Add("http://news.sdau.edu.cn/list.php?pid=1");
+            list.Add("http://news.sdau.edu.cn/list.php?pid=2");
+            list.Add("http://news.sdau.edu.cn/list.php?pid=3");
+            list.Add("http://news.sdau.edu.cn/list.php?pid=4");
+            list.Add("http://news.sdau.edu.cn/yzrd.php");
+            list.Add("http://news.sdau.edu.cn/list.php?pid=6");
+            list.Add("http://www4.sdau.edu.cn/xcb/tushuoxiaoyuan");
+            list.Add("http://news.sdau.edu.cn/list.php?pid=8");
+            list.Add("http://xiaobao.sdau.edu.cn/");
+            list.Add("http://news.sdau.edu.cn/list.php?pid=11");
+            list.Add("http://news.sdau.edu.cn/list.php?pid=7");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66429");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66441");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66431");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66444");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66397");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66454");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66419");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66428");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66445");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66409");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66424");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66404");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66458");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66427");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66416");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66430");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66442");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66455");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66421");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66452");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66499");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66476");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66448");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66467");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66460");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66443");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66423");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66398");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66392");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66390");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66389");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66366");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66377");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66369");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66347");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66341");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66340");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66334");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66333");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66331");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66325");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66292");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66286");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66223");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66218");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66199");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66192");
+            list.Add("http://news.sdau.edu.cn/view.php?Id=66189");
+            list.Add("http://www.sdau.edu.cn/xcb/tushuoxiaoyuan");
+            list.Add("http://weekly.sdau.edu.cn/");
+            list.Add("http://www.sdaunet.com/");
+            list.Add("http://bbs.sdaunet.com/");
+            list.Add("http://news.sdau.edu.cn/web_manage/index.php");
+            list.Add("http://news.sdau.edu.cn/tongji.php");
+            list.Add("http://news.sdau.edu.cn/");
+            list.Add("http://news.sdau.edu.cn/list.php?pid=1");
+            list.Add("http://news.sdau.edu.cn/list.php?pid=2");
+            list.Add("http://news.sdau.edu.cn/list.php?pid=3");
+            list.Add("http://news.sdau.edu.cn/list.php?pid=4");
+            list.Add("http://news.sdau.edu.cn/yzrd.php");
+            list.Add("http://news.sdau.edu.cn/list.php?pid=6");
+            list.Add("http://www4.sdau.edu.cn/xcb/tushuoxiaoyuan");
+            list.Add("http://news.sdau.edu.cn/list.php?pid=8");
+            list.Add("http://xiaobao.sdau.edu.cn/");
+
             list.Add("今天天气好晴朗");
             list.Add("今天天气好晴朗，又是刮风又是下雨");
             list.Add("娃哈哈");
             list.Add("小明，你妈叫你回家吃饭");
             List<UrlCombination> urlList = GetCombinatorics(list);
+            //对数据排序
+            BubbleSorter bubSorter = new BubbleSorter();
+            bubSorter.BubbleSort(urlList);
+
             foreach (var item in urlList)
             {
                 Console.WriteLine(item.Url1 + "与" + item.Url2 + "的相似度是：" + item.SimHash + "%");
+                File.AppendAllText(logFilePath, item.Url1 + "与" + item.Url2 + "的相似度是：" + item.SimHash + "%" + "\r\n");
             }
 
             Console.ReadKey();

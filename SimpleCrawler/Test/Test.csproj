@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BubbleSorter.cs" />
     <Compile Include="UrlCombination.cs" />
     <Compile Include="HttpHelper.cs" />
     <Compile Include="Program.cs" />
