@@ -14,7 +14,7 @@ namespace Test
 {
     internal class Program
     {
-        private static string logFilePath = AppDomain.CurrentDomain.BaseDirectory + @"\logFile\log.txt";
+        private static string logFilePath = AppDomain.CurrentDomain.BaseDirectory + @"\logFile\logclear.txt";
 
         [STAThread]
         private static void Main(string[] args)
@@ -59,15 +59,16 @@ namespace Test
             urlAndHtml.Html = html;
 
             //Console.WriteLine(urlAndHtml.Html);
-            Console.WriteLine(AutoNextPage(urlAndHtml));
+            string strReg = "<a .+ href='(.+)'>下一页</a>";
+            Console.WriteLine(AutoNextPage(urlAndHtml, strReg, 1));
             //AutoNextPage(GetHtml(AutoNextPage(urlAndHtml)));
 
             Console.WriteLine("End");
             System.Console.ReadKey();
+            #region 测试数据
+
             //测试排列组合
-
             List<string> list = new List<string>();
-
             list.Add("http://news.sdau.edu.cn/web_manage/index.php");
             list.Add("http://news.sdau.edu.cn/tongji.php");
             list.Add("http://news.sdau.edu.cn/");
@@ -151,18 +152,98 @@ namespace Test
             list.Add("今天天气好晴朗，又是刮风又是下雨");
             list.Add("娃哈哈");
             list.Add("小明，你妈叫你回家吃饭");
+            #endregion
+            #region 换个思路
+            /*
             List<UrlCombination> urlList = GetCombinatorics(list);
-            //对数据排序
-            BubbleSorter bubSorter = new BubbleSorter();
-            bubSorter.BubbleSort(urlList);
-
+            //urlList.OrderBy(c => c.SimHash);//排序,不用排序
+            //List<UrlCombination> clrList = urlList.Where(c => c.SimHash >= 87.5f).ToList();//筛选
+            //
             foreach (var item in urlList)
             {
                 Console.WriteLine(item.Url1 + "与" + item.Url2 + "的相似度是：" + item.SimHash + "%");
                 File.AppendAllText(logFilePath, item.Url1 + "与" + item.Url2 + "的相似度是：" + item.SimHash + "%" + "\r\n");
             }
+            */
+            #endregion
+
+            //新思路
+            //"http://news.sdau.edu.cn/view.php?Id=66340"
+            strReg = "(view).+?([0-9]{5})";// @"<a href='(.+)'.+</a>";//<a href="view.php?Id=66533" title="【专题】金秋硕果日 扬帆追梦时" target="_blank">【专题】金秋硕果日 扬帆追梦时</a>
+            //List<string> patList = new List<string>();
+            //patList.Add(strReg);
+
+            List<string> urlList = GetUsefulUrl(urlAndHtml, strReg, 0);
+            foreach (var item in urlList)
+            {
+                Console.WriteLine(item);
+            }
 
             Console.ReadKey();
+        }
+
+        private static string AutoNextPage(UrlAndHtml args, string patternStr, int groupIndex)
+        {
+            string url = "";
+            string html = args.Html;
+            //string strReg = "<a .+ href='(.+)'>下一页</a>";
+            Regex regex = new Regex(patternStr);
+            Match mat = regex.Match(html);
+            if (mat.Success)
+            {
+                if (IsUrlable(mat.Groups[groupIndex].Value))
+                {
+                    url = mat.Groups[groupIndex].Value;
+                }
+                else
+                {
+                    //url=args.Url.en
+                    //abcd e f
+                    //0123 4 5
+                    //http://news.sdau.edu.cn/list.php?pid=3
+                    //http://news.sdau.edu.cn /?pid=3&page=2
+                    Int32 index = args.Url.LastIndexOf("/");
+                    url = args.Url.Substring(0, index) + "/list.php" + mat.Groups[groupIndex].Value;
+                }
+            }
+            return IsUrlable(url) ? url : null;
+        }
+
+        private static List<string> GetUsefulUrl(UrlAndHtml args, string patternStr, int groupIndex)
+        {
+            string url = "";
+            string html = args.Html;
+            string strReg = patternStr;// "<a .+ href='(view.php?Id=\\d+)' .*</a>";//<a href="view.php?Id=66529" target="_blank">植保学院邀请专家为青年教师授课</a>
+
+            List<string> list = new List<string>();
+
+            #region 废弃
+
+            MatchCollection mats = Regex.Matches(html, strReg);
+            foreach (Match item in mats)
+            {
+                if (item.Success)
+                {
+                    if (IsUrlable(item.Groups[groupIndex].Value))
+                    {
+                        url = item.Groups[groupIndex].Value;
+                    }
+                    else
+                    {
+                        //这个地方其实也是写死的，可以有高级配置存在
+                        //如果正则表达式得到的url是相对路径，需要配置为绝对路径
+                        //参数名为相对路径前缀，且以“/”结尾
+                        Int32 index = args.Url.LastIndexOf("/");
+                        url = args.Url.Substring(0, index) + "/" + item.Groups[groupIndex].Value;
+                    }
+                }
+                if (IsUrlable(url))
+                {
+                    list.Add(url);
+                }
+            }
+            #endregion
+            return list;
         }
 
         private static string GetHtml(string url)
@@ -227,10 +308,93 @@ namespace Test
             return IsUrlable(url) ? url : null;
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="patternStr">传入的正则表达式，且分组后Groups[0]代表所需内容</param>
+        /// <returns></returns>
+        private static List<string> GetUsefulUrl(UrlAndHtml args, string patternStr)//直接匹配
+        {
+            string url = "";
+            string html = args.Html;
+            string strReg = patternStr;
+            List<string> list = new List<string>();
+
+            #region 废弃
+
+            MatchCollection mats = Regex.Matches(html, strReg);
+            foreach (Match item in mats)
+            {
+                if (item.Success)
+                {
+                    if (IsUrlable(item.Groups[0].Value))
+                    {
+                        url = item.Groups[0].Value;
+                    }
+                    else
+                    {
+                        //url=args.Url.en
+                        //abcd e f
+                        //0123 4 5
+                        //http://news.sdau.edu.cn/list.php?pid=3
+                        //http://news.sdau.edu.cn /?pid=3&page=2
+                        Int32 index = args.Url.LastIndexOf("/");
+                        url = args.Url.Substring(0, index) + "/" + item.Groups[0].Value;
+                    }
+                }
+                if (IsUrlable(url))
+                {
+                    list.Add(url);
+                }
+            }
+            #endregion
+            return list;
+        }
+
+        private static List<string> GetUsefulUrl(UrlAndHtml args, List<string> patternStrList)//直接匹配
+        {
+            #region sdau
+            string url = "";
+            string html = args.Html;
+            List<string> UseFulList = null;
+
+            if (patternStrList != null && patternStrList.Count > 0)
+            {
+                UseFulList = new List<string>();
+
+                foreach (var item in patternStrList)
+                {
+                    Regex regex = new Regex(item);
+                    Match mat = regex.Match(html);//Regex.IsMatch(url, pattern, RegexOptions.IgnoreCase)
+                    if (mat.Success)
+                    {
+                        if (IsUrlable(mat.Groups[0].Value))
+                        {
+                            //UseFulList.Add(mat.Groups[0].Value);
+                            url = mat.Groups[0].Value;
+                        }
+                        else
+                        {
+                            url = "http://news.sdau.edu.cn/" + mat.Groups[0].Value;
+                        }
+                    }
+                    if (IsUrlable(url))
+                    {
+                        UseFulList.Add(url);
+                    }
+                }
+            }
+            return UseFulList;
+            #endregion
+        }
+
         private static bool IsUrlable(string str)
         {
             return Regex.IsMatch(str, @"^http://([\w-]+\.)+[\w-]+(/[\w-./?%&=]*)?$");
         }
+
+        #region 换思路前
 
         //字符串两两组合。
         //需要一个新的类型
@@ -257,5 +421,25 @@ namespace Test
             IAnalyser analyser = new SimHashAnalyser();
             return analyser.GetLikenessValue(str1, str2) * 100;
         }
+
+        /// <summary>
+        /// 移除相似值低的数据，即分类
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="gateValue"></param>
+        private static List<UrlCombination> ClearUrlComList(List<UrlCombination> list, float gateValue)
+        {
+            List<UrlCombination> temp = new List<UrlCombination>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].SimHash >= gateValue)
+                {
+                    temp.Add(list[i]);
+                }
+            }
+            return temp;
+        }
+
+        #endregion
     }
 }
