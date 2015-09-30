@@ -106,8 +106,9 @@ namespace SimpleCrawler
 
         /// <summary>
         /// 自定义超链接处理事件
+        /// 主要处理UrlDictionary
         /// </summary>
-        public event CustomParseLinkEventHandler CustomParseLinkEvent;
+        public event CustomParseLinkEvent2Handler CustomParseLinkEvent2;
 
         #endregion Public Events
 
@@ -267,20 +268,27 @@ namespace SimpleCrawler
                                         Depth = urlInfo.Depth,
                                         Html = html
                                     });
-                                if (this.CustomParseLinkEvent != null)
-                                {
-                                    //自定义事件，将DataReceivedEventArgs传入，将处理过程暴露给外部，将自定义方法处理获得的UrlInfo（主要是url）加入队列
-                                    var customUrlInfo = this.CustomParseLinkEvent(new DataReceivedEventArgs
-                                    {
-                                        Url = urlInfo.UrlString,
-                                        Depth = urlInfo.Depth,
-                                        Html = html
-                                    });
-                                    if (customUrlInfo != null)
-                                    {
-                                        UrlQueue.Instance.EnQueue(customUrlInfo);
-                                    }
-                                }
+
+                                #region 20150930之前处理的方式
+
+                                /*20150930之前处理的方式
+                                                    if (this.CustomParseLinkEvent != null)
+                                                    {
+                                                        //自定义事件，将DataReceivedEventArgs传入，将处理过程暴露给外部，将自定义方法处理获得的UrlInfo（主要是url）加入队列
+                                                        var customUrlInfo = this.CustomParseLinkEvent(new DataReceivedEventArgs
+                                                        {
+                                                            Url = urlInfo.UrlString,
+                                                            Depth = urlInfo.Depth,
+                                                            Html = html
+                                                        });
+                                                        if (customUrlInfo != null)
+                                                        {
+                                                            UrlQueue.Instance.EnQueue(customUrlInfo);
+                                                        }
+                                                    }
+                                                    */
+
+                                #endregion 20150930之前处理的方式
                             }
 
                             if (stream != null)
@@ -349,6 +357,21 @@ namespace SimpleCrawler
 
                 urlDictionary[urlKey] = urlValue;
                 match = match.NextMatch();//从上一个匹配结束的位置（即在上一个匹配字符之后的字符）开始返回一个包含下一个匹配结果的新
+            }
+            //至此会得到一个urlDictionary[urlKey] = urlValue;
+            //Kiwi:在这里添加自定义处理也不错，url+html==>url
+            //至此出现两个问题：1、有些URL不是我们需要的，它们添加进来了
+            //                 2、有由JS自动生成的url，这里没有获得，比如page.js，页面接受完数据后，浏览器执行js代码，生成页码条，嵌入到页面上
+            //自定义操作，我挖掘html，获得新URL加入到urlDictionary；
+            //           urlDictionary删除不必要的URL
+            if (CustomParseLinkEvent2 != null)
+            {
+                urlDictionary = CustomParseLinkEvent2(new CustomParseLinkEvent2Args
+                {
+                    UrlInfo = urlInfo,
+                    UrlDictionary = urlDictionary,
+                    Html = html
+                });//1、urlInfo原始信息；2、初步解析后的html信息；3、初步解析得到的url集合
             }
 
             foreach (var item in urlDictionary)
@@ -424,6 +447,8 @@ namespace SimpleCrawler
                         }
 
                         #endregion addUrlEventArgs
+
+                        //Kiwi:在这里添加一个事件处理自定义的url处理方法最好了
 
                         //经过上面的一系列处理，决定将url加入队列
                         UrlQueue.Instance.EnQueue(new UrlInfo(url) { Depth = urlInfo.Depth + 1 });

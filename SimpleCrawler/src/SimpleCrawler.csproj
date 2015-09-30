@@ -46,6 +46,7 @@
     <Compile Include="CrawlMaster.cs" />
     <Compile Include="CrawlSettings.cs" />
     <Compile Include="CrawlStatus.cs" />
+    <Compile Include="CustomParseLinkEvent2Args.cs" />
     <Compile Include="CustomParseLinkEventArgs.cs" />
     <Compile Include="DataReceivedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

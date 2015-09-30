@@ -73,7 +73,7 @@ namespace SimpleCrawler.Demo
             Settings.ThreadCount = 1;
 
             // 设置爬取深度
-            Settings.Depth = 4;
+            Settings.Depth = 60;
 
             // 设置爬取时忽略的 Link，通过后缀名的方式，可以添加多个
             Settings.EscapeLinks.Add(".jpg");
@@ -97,10 +97,18 @@ namespace SimpleCrawler.Demo
             var master = new CrawlMaster(Settings);
             master.AddUrlEvent += MasterAddUrlEvent;
             master.DataReceivedEvent += MasterDataReceivedEvent;
-            master.CustomParseLinkEvent += AutoNextPage;
+            //master.CustomParseLinkEvent += CustomParseLinkEvent_Next;
+            //master.CustomParseLinkEvent += CustomParseLinkEvent_MainList;
+            master.CustomParseLinkEvent2 += Master_CustomParseLinkEvent2;
             master.Crawl();
 
             Console.ReadKey();
+        }
+
+        private static Dictionary<string, string> Master_CustomParseLinkEvent2(CustomParseLinkEvent2Args args)//用ref或out改写该方法
+        {
+            args.UrlDictionary = CustomParseLinkE_MainList(args, "(view).+?([0-9]{5})");//去除
+            return CustomParseLinkE_NextPageSdau(args, "<a .+ href='(.+)'>下一页</a>", 1);//添加
         }
 
         /// <summary>
@@ -136,7 +144,9 @@ namespace SimpleCrawler.Demo
         {
             // 在此处解析页面，可以用类似于 HtmlAgilityPack（页面解析组件）的东东、也可以用正则表达式、还可以自己进行字符串分析
             //NSoup.Nodes.Document doc = NSoup.NSoupClient.Parse(args.Html);
+
             #region 接收数据处理
+
             fileQueue.Enqueue(args.Html);
             ThreadPool.QueueUserWorkItem(o =>
             {
@@ -150,7 +160,7 @@ namespace SimpleCrawler.Demo
                             string fileContent = fileQueue.Dequeue();
                             if (fileContent.Trim() != "")
                             {
-                                // WriteToFiles(fileContent);
+                                WriteToFiles(fileContent);
                             }
                             //AddUrlEventArgs urlArgs = new AddUrlEventArgs();
                             //urlArgs.Depth = 1;
@@ -192,11 +202,6 @@ namespace SimpleCrawler.Demo
             }
         }
 
-        //private static bool Master_AddUrlEvent(AddUrlEventArgs args)
-        //{
-        //  return MasterAddUrlEvent(args);
-        //}
-
         #endregion Methods
 
         #region 自定义方法
@@ -225,80 +230,45 @@ namespace SimpleCrawler.Demo
         /// </summary>
         /// <param name="args">DataReceivedEventArgs</param>
         /// <returns>URL</returns>
-        private static UrlInfo AutoNextPage(DataReceivedEventArgs args)
+        private static void CustomParseLinkEvent_Next(CustomParseLinkEvent2Args args)
         {
-            string url = "";
-            string html = args.Html;
+            #region 20150930之前的代码
 
-            #region 正则表达式参考
-
-            //@"(?is)<a[^>]*?href=(['""\s]?)(?<href>[^'""\s]*)\1[^>]*?>";// 模式<a href="(.+)">下一页</a>
-            //29.匹配HTML标记的正则表达式：< (\S *?)[^>]*>.*?</>|<.*? />
-            //评注：网上流传的版本太糟糕，上面这个也仅仅能匹配部分，对于复杂的嵌套标记依旧无能为力
-            //版本二：
-            //HTML标记(包含内容或自闭合)：<(.*)(.*)>.*<\/\1>|<(.*) \/>
-            //31.匹配网址URL的正则表达式：[a-zA-z]+://[^\s]*
-            //评注：网上流传的版本功能很有限，上面这个基本可以满足需求
-            //Regex reg = new Regex(@"(?is)<a[^>]*?href=(['""\s]?)(?<href>[^'""\s]*)\1[^>]*?>");
-            //MatchCollection match = reg.Matches(str);
-            //foreach (Match m in match)
-            //{
-            //    Response.Write(m.Groups["href"].Value + "<br/>");
-            //}
-
-            #endregion 正则表达式参考
-
-            string strReg = "<a .+ href='(.+)'>下一页</a>";
-            Regex regex = new Regex(strReg);
-
-            #region
-
-            //MatchCollection mat = regex.Matches(html);//一个页面只有一个匹配项
-            //foreach (Match item in mat)
-            //{
-            //    if (item.Success)
-            //    {
-            //        //URL "^http://([\w-]+\.)+[\w-]+(/[\w-./?%&=]*)?$"
-            //        //http://www.shgtj.gov.cn/2011/gcjsxx/xmxx/ghxzyj/index.html
-            //        if (IsUrlable(item.Groups[1].Value))
-            //        {
-            //            url = item.Groups[1].Value;
-            //        }
-            //        else
-            //        {
-            //            //url=args.Url.en
-            //            //abcd e f
-            //            //0123 4 5
-            //            Int32 index = args.Url.LastIndexOf("/");
-            //            url = args.Url.Substring(0, index) + "/" + url;
-            //        }
-            //    }
-            //}
-
-            #endregion 自定义方法
-
-            Match mat = regex.Match(html);
-            if (mat.Success)
-            {
-                if (IsUrlable(mat.Groups[1].Value))
+            /*20150930之前的代码
+                string url = "";
+                string html = args.Html;
+                string strReg = "<a .+ href='(.+)'>下一页</a>";
+                Regex regex = new Regex(strReg);
+                Match mat = regex.Match(html);
+                if (mat.Success)
                 {
-                    url = mat.Groups[1].Value;
-                }
-                else
-                {
-                    Int32 index = args.Url.LastIndexOf("/");
-                    //url = args.Url.Substring(0, index) + "/" + mat.Groups[1].Value;
-                    url = args.Url.Substring(0, index) + "/list.php" + mat.Groups[1].Value;
-                    Console.WriteLine("************************");
-                    Console.WriteLine(url);
-                    Console.WriteLine("************************");
+                    if (IsUrlable(mat.Groups[1].Value))
+                    {
+                        url = mat.Groups[1].Value;
+                    }
+                    else
+                    {
+                        Int32 index = args.Url.LastIndexOf("/");
+                        //url = args.Url.Substring(0, index) + "/" + mat.Groups[1].Value;
+                        url = args.Url.Substring(0, index) + "/list.php" + mat.Groups[1].Value;
+                        Console.WriteLine("************************");
+                        Console.WriteLine(url);
+                        Console.WriteLine("************************");
 
-                    File.AppendAllText(urlFilePath, "************************" + "\r\n");
-                    File.AppendAllText(urlFilePath, args.Url + "\r\n");
-                    File.AppendAllText(urlFilePath, "************************" + "\r\n");
+                        File.AppendAllText(urlFilePath, "************************" + "\r\n");
+                        File.AppendAllText(urlFilePath, args.Url + "\r\n");
+                        File.AppendAllText(urlFilePath, "************************" + "\r\n");
+                    }
                 }
-            }
-            return IsUrlable(url) ? new UrlInfo(url) { Depth = args.Depth + 1 } : null;
+                return IsUrlable(url) ? new UrlInfo(url) { Depth = args.Depth + 1 } : null;
+                */
+
+            #endregion 20150930之前的代码
+
+            //urlAndHtml.Html = args.Html;
+            //urlAndHtml.Url = args.Url;
+            //string url = AutoNextPage(urlAndHtml, "<a .+ href='(.+)'>下一页</a>", 1);
+            //return IsUrlable(url) ? new UrlInfo(url) { Depth = args.Depth + 1 } : null;
         }
 
         private static bool IsUrlable(string str)
@@ -306,13 +276,83 @@ namespace SimpleCrawler.Demo
             return Regex.IsMatch(str, @"^http://([\w-]+\.)+[\w-]+(/[\w-./?%&=]*)?$");
         }
 
-        private static string ClearUrl(string strUrl1, string strUrl2)
+        private static Dictionary<string, string> CustomParseLinkE_NextPageSdau(CustomParseLinkEvent2Args args, string patternStr, int groupIndex)
         {
-            IAnalyser analyser = new SimHashAnalyser();
-            var likeness = analyser.GetLikenessValue(strUrl1, strUrl2);
-            return "";
+            string url = "";
+            if (args != null && !string.IsNullOrEmpty(args.Html))
+            {
+                Regex regex = new Regex(patternStr);
+                Match mat = regex.Match(args.Html);
+                if (mat.Success)
+                {
+                    url = mat.Groups[groupIndex].Value;
+                    var baseUri = new Uri(args.UrlInfo.UrlString);
+                    Uri currentUri = url.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                                         ? new Uri(url)
+                                         : new Uri(baseUri, url);//根据指定的基 URI 和相对 URI 字符串，初始化 System.Uri 类的新实例。
+                                                                 //如果不包含http，则认为超链接是相对路径，根据baseUrl建立绝对路径
+                    url = currentUri.AbsoluteUri;
+                    //Console.WriteLine("######" + url + "######");
+                    args.UrlDictionary.Add(url, Guid.NewGuid().ToString());
+                }
+            }
+            return args.UrlDictionary;
         }
 
-        #endregion
+        private static Dictionary<string, string> CustomParseLinkE_MainList(CustomParseLinkEvent2Args args, string patternStr)
+        {
+            Dictionary<string, string> temp = new Dictionary<string, string>();
+            foreach (var item in args.UrlDictionary)
+            {
+                string href = item.Key;
+                string text = item.Value;
+
+                if (!string.IsNullOrEmpty(href))
+                {
+                    Regex regex = new Regex(patternStr);
+                    Match mat = regex.Match(href);
+                    if (mat.Success)
+                    {
+                        temp.Add(href, text);
+                    }
+                }
+            }
+            return temp;
+        }
+
+        private static List<string> GetUsefulUrl(UrlAndHtml args, string patternStr, int groupIndex)
+        {
+            string url = "";
+            string html = args.Html;
+            string strReg = patternStr;
+            List<string> list = new List<string>();
+
+            MatchCollection mats = Regex.Matches(html, strReg);
+            foreach (Match item in mats)
+            {
+                if (item.Success)
+                {
+                    if (IsUrlable(item.Groups[groupIndex].Value))
+                    {
+                        url = item.Groups[groupIndex].Value;
+                    }
+                    else
+                    {
+                        //这个地方其实也是写死的，可以有高级配置存在
+                        //如果正则表达式得到的url是相对路径，需要配置为绝对路径
+                        //参数名为相对路径前缀，且以“/”结尾
+                        Int32 index = args.Url.LastIndexOf("/");
+                        url = args.Url.Substring(0, index) + "/" + item.Groups[groupIndex].Value;
+                    }
+                }
+                if (IsUrlable(url))
+                {
+                    list.Add(url);
+                }
+            }
+            return list;
+        }
+
+        #endregion 自定义方法
     }
 }
