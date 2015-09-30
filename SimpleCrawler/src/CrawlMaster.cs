@@ -110,6 +110,8 @@ namespace SimpleCrawler
         /// </summary>
         public event CustomParseLinkEvent2Handler CustomParseLinkEvent2;
 
+        public event CustomParseLinkEvent3Handler CustomParseLinkEvent3;
+
         #endregion Public Events
 
         #region Public Properties
@@ -364,14 +366,29 @@ namespace SimpleCrawler
             //                 2、有由JS自动生成的url，这里没有获得，比如page.js，页面接受完数据后，浏览器执行js代码，生成页码条，嵌入到页面上
             //自定义操作，我挖掘html，获得新URL加入到urlDictionary；
             //           urlDictionary删除不必要的URL
-            if (CustomParseLinkEvent2 != null)
+            if (CustomParseLinkEvent3 != null)
             {
-                urlDictionary = CustomParseLinkEvent2(new CustomParseLinkEvent2Args
+                CustomParseLinkEvent3Args linkArgs = new CustomParseLinkEvent3Args
                 {
                     UrlInfo = urlInfo,
                     UrlDictionary = urlDictionary,
                     Html = html
-                });//1、urlInfo原始信息；2、初步解析后的html信息；3、初步解析得到的url集合
+                };//1、urlInfo原始信息；2、初步解析后的html信息；3、初步解析得到的url集合
+
+                #region 被升级的代码
+
+                //CustomParseLinkEvent2的代码
+                //urlDictionary = CustomParseLinkEvent2(new CustomParseLinkEvent2Args
+                //{
+                //    UrlInfo = urlInfo,
+                //    UrlDictionary = urlDictionary,
+                //    Html = html
+                //});
+
+                #endregion 被升级的代码
+
+                CustomParseLinkEvent3(linkArgs);
+                urlDictionary = linkArgs.UrlDictionary;
             }
 
             foreach (var item in urlDictionary)

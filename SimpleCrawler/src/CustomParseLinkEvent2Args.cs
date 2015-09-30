@@ -16,4 +16,18 @@
 
         #endregion Public Properties
     }
+
+    public delegate void CustomParseLinkEvent3Handler(CustomParseLinkEvent3Args args);
+
+    public class CustomParseLinkEvent3Args : EventArgs
+    {
+        #region Public Properties
+
+        public UrlInfo UrlInfo { get; set; }
+        public Dictionary<string, string> UrlDictionary { get; set; }
+
+        public string Html { get; set; }
+
+        #endregion Public Properties
+    }
 }

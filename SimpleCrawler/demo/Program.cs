@@ -73,7 +73,7 @@ namespace SimpleCrawler.Demo
             Settings.ThreadCount = 1;
 
             // 设置爬取深度
-            Settings.Depth = 60;
+            Settings.Depth = 62;//页码数+1
 
             // 设置爬取时忽略的 Link，通过后缀名的方式，可以添加多个
             Settings.EscapeLinks.Add(".jpg");
@@ -97,9 +97,8 @@ namespace SimpleCrawler.Demo
             var master = new CrawlMaster(Settings);
             master.AddUrlEvent += MasterAddUrlEvent;
             master.DataReceivedEvent += MasterDataReceivedEvent;
-            //master.CustomParseLinkEvent += CustomParseLinkEvent_Next;
-            //master.CustomParseLinkEvent += CustomParseLinkEvent_MainList;
-            master.CustomParseLinkEvent2 += Master_CustomParseLinkEvent2;
+            // master.CustomParseLinkEvent2 += Master_CustomParseLinkEvent2;
+            master.CustomParseLinkEvent3 += Master_CustomParseLinkEvent3;
             master.Crawl();
 
             Console.ReadKey();
@@ -162,13 +161,6 @@ namespace SimpleCrawler.Demo
                             {
                                 WriteToFiles(fileContent);
                             }
-                            //AddUrlEventArgs urlArgs = new AddUrlEventArgs();
-                            //urlArgs.Depth = 1;
-                            //urlArgs.Title = "下一页";
-                            //urlArgs.Url= AutoNextPage(args);
-                            //MasterAddUrlEvent(urlArgs);
-                            //string url = AutoNextPage(args);
-                            //Settings.SeedsAddress.Add(url);
                         }
                         else
                         {
@@ -183,6 +175,10 @@ namespace SimpleCrawler.Demo
 
             #endregion 接收数据处理
         }
+
+        #endregion Methods
+
+        #region 自定义代码
 
         private static void WriteToFiles(string fileContent)
         {
@@ -202,9 +198,59 @@ namespace SimpleCrawler.Demo
             }
         }
 
-        #endregion Methods
+        private static void Master_CustomParseLinkEvent3(CustomParseLinkEvent3Args args)
+        {
+            CustomParseLink_MainList(args, "(view).+?([0-9]{5})");//去除
+            CustomParseLink_NextPageSdau(args, "<a .+ href='(.+)'>下一页</a>", 1);//添加
+        }
 
-        #region 自定义方法
+        private static void CustomParseLink_NextPageSdau(CustomParseLinkEvent3Args args, string patternStr, int groupIndex)
+        {
+            string url = "";
+            if (args != null && !string.IsNullOrEmpty(args.Html))
+            {
+                Regex regex = new Regex(patternStr);
+                Match mat = regex.Match(args.Html);
+                if (mat.Success)
+                {
+                    url = mat.Groups[groupIndex].Value;
+                    var baseUri = new Uri(args.UrlInfo.UrlString);
+                    Uri currentUri = url.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                                         ? new Uri(url)
+                                         : new Uri(baseUri, url);//根据指定的基 URI 和相对 URI 字符串，初始化 System.Uri 类的新实例。
+                                                                 //如果不包含http，则认为超链接是相对路径，根据baseUrl建立绝对路径
+                    url = currentUri.AbsoluteUri;
+                    //Console.WriteLine("######" + url + "######");
+                    args.UrlDictionary.Add(url, Guid.NewGuid().ToString());
+                }
+            }
+            //return args.UrlDictionary;
+        }
+
+        private static void CustomParseLink_MainList(CustomParseLinkEvent3Args args, string patternStr)
+        {
+            Dictionary<string, string> temp = new Dictionary<string, string>();
+            foreach (var item in args.UrlDictionary)
+            {
+                string href = item.Key;
+                string text = item.Value;
+
+                if (!string.IsNullOrEmpty(href))
+                {
+                    Regex regex = new Regex(patternStr);
+                    Match mat = regex.Match(href);
+                    if (mat.Success)
+                    {
+                        temp.Add(href, text);
+                    }
+                }
+            }
+            args.UrlDictionary = temp;
+        }
+
+        #endregion 自定义代码
+
+        #region 不用的代码
 
         //翻页的方法
         /// <summary>
@@ -353,6 +399,6 @@ namespace SimpleCrawler.Demo
             return list;
         }
 
-        #endregion 自定义方法
+        #endregion 不用的代码
     }
 }
