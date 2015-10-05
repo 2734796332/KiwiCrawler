@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Program.cs" company="pzcast">
-//   (C) 2015 pzcast. All rights reserved.
+// <copyright file="Program.cs" company="Kiwi">
+//   (C) 2015 Kiwi. All rights reserved.
 // </copyright>
 // <summary>
 //   The program.1777
@@ -200,10 +200,16 @@ namespace SimpleCrawler.Demo
 
         private static void Master_CustomParseLinkEvent3(CustomParseLinkEvent3Args args)
         {
-            CustomParseLink_MainList(args, "(view).+?([0-9]{5})");//去除
-            CustomParseLink_NextPageSdau(args, "<a .+ href='(.+)'>下一页</a>", 1);//添加
+            CustomParseLink_MainList(args, "(view).+?([0-9]{5})");//去除,下一步，拼写一个大的正则表达式就好
+            CustomParseLink_NextPageSdau(args, "<a .+ href='(.+)'>下一页</a>", 1);//添加，下一步，拼写一个大的正则表达式就好
         }
 
+        /// <summary>
+        /// 处理Html
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="patternStr"></param>
+        /// <param name="groupIndex"></param>
         private static void CustomParseLink_NextPageSdau(CustomParseLinkEvent3Args args, string patternStr, int groupIndex)
         {
             string url = "";
@@ -227,6 +233,11 @@ namespace SimpleCrawler.Demo
             //return args.UrlDictionary;
         }
 
+        /// <summary>
+        /// 处理UrlDictionary
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="patternStr"></param>
         private static void CustomParseLink_MainList(CustomParseLinkEvent3Args args, string patternStr)
         {
             Dictionary<string, string> temp = new Dictionary<string, string>();
