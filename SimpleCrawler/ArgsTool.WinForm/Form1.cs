@@ -1,4 +1,5 @@
 ﻿using DotNet4.Utilities;
+using FastColoredTextBoxNS;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,6 +19,9 @@ namespace ArgsTool.WinForm
         {
             InitializeComponent();
             txtUrl.Text = "http://www.shgtj.gov.cn/2011/gcjsxx/xmxx/ghxzyj/";
+            txtHtml.Language = Language.HTML;
+            txtHtml.ImeMode = System.Windows.Forms.ImeMode.On;
+            txtHtml.Font = new System.Drawing.Font("Consolas", 9.75F);
         }
 
         private void btnCheck_Click(object sender, EventArgs e)
@@ -29,6 +33,7 @@ namespace ArgsTool.WinForm
             {
                 html = GetHtml(url);
                 //string cookie = result.Cookie;
+                txtHtml.Text = "";
                 txtHtml.Text = html;
             }
             //正则表达式处理

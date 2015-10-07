@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.btnCheck = new System.Windows.Forms.Button();
             this.txtUrl = new System.Windows.Forms.TextBox();
             this.txtChecked = new System.Windows.Forms.TextBox();
@@ -35,17 +37,18 @@
             this.label2 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.txtHtml = new System.Windows.Forms.TextBox();
             this.txtResult = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.txtGroup = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.txtHtml = new FastColoredTextBoxNS.FastColoredTextBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtHtml)).BeginInit();
             this.SuspendLayout();
             // 
             // btnCheck
@@ -115,16 +118,6 @@
             this.splitContainer1.SplitterDistance = 514;
             this.splitContainer1.TabIndex = 0;
             // 
-            // txtHtml
-            // 
-            this.txtHtml.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtHtml.Location = new System.Drawing.Point(0, 0);
-            this.txtHtml.Multiline = true;
-            this.txtHtml.Name = "txtHtml";
-            this.txtHtml.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtHtml.Size = new System.Drawing.Size(514, 405);
-            this.txtHtml.TabIndex = 3;
-            // 
             // txtResult
             // 
             this.txtResult.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -169,6 +162,36 @@
             this.label5.TabIndex = 9;
             this.label5.Text = "第几组(NextPage)：";
             // 
+            // txtHtml
+            // 
+            this.txtHtml.AutoCompleteBracketsList = new char[] {
+        '(',
+        ')',
+        '{',
+        '}',
+        '[',
+        ']',
+        '\"',
+        '\"',
+        '\'',
+        '\''};
+            this.txtHtml.AutoScrollMinSize = new System.Drawing.Size(27, 14);
+            this.txtHtml.BackBrush = null;
+            this.txtHtml.CharHeight = 14;
+            this.txtHtml.CharWidth = 8;
+            this.txtHtml.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtHtml.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+            this.txtHtml.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtHtml.IsReplaceMode = false;
+            this.txtHtml.Location = new System.Drawing.Point(0, 0);
+            this.txtHtml.Name = "txtHtml";
+            this.txtHtml.Paddings = new System.Windows.Forms.Padding(0);
+            this.txtHtml.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
+            this.txtHtml.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("txtHtml.ServiceColors")));
+            this.txtHtml.Size = new System.Drawing.Size(514, 405);
+            this.txtHtml.TabIndex = 4;
+            this.txtHtml.Zoom = 100;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -188,11 +211,11 @@
             this.Text = "Form1";
             this.panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.txtHtml)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -207,12 +230,12 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.TextBox txtHtml;
         private System.Windows.Forms.TextBox txtResult;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtGroup;
         private System.Windows.Forms.Label label5;
+        private FastColoredTextBoxNS.FastColoredTextBox txtHtml;
     }
 }
 
