@@ -62,8 +62,8 @@ namespace SimpleCrawler.Demo
 
             // 设置种子地址
             //Settings.SeedsAddress.Add(string.Format("http://jobs.zhaopin.com/{0}", CityName));//
-            //Settings.SeedsAddress.Add("http://www.shgtj.gov.cn/2011/gcjsxx/xmxx/ghxzyj/");
-            Settings.SeedsAddress.Add("http://news.sdau.edu.cn/list.php?pid=3");
+            //Settings.SeedsAddress.Add("http://news.sdau.edu.cn/list.php?pid=3"); sdau
+            Settings.SeedsAddress.Add("http://www.shdrc.gov.cn/gcxm/sub1.jsp?lb=001001");
             //Settings.SeedsAddress.Add("   ");
             // 设置 URL 关键字
             //Settings.HrefKeywords.Add(string.Format("/{0}/bj", CityName));
@@ -190,18 +190,25 @@ namespace SimpleCrawler.Demo
             }
 
             Article article = Html2Article.GetArticle(fileContent);
-            //Console.WriteLine(article.Content);
-            using (FileStream fsWriter = new FileStream(articlePath + fileId + doc.Title + ".txt", FileMode.Create, FileAccess.Write))
+            if (!String.IsNullOrEmpty(article.Content))
             {
-                byte[] buffer = System.Text.Encoding.Default.GetBytes(article.Content);
-                fsWriter.Write(buffer, 0, buffer.Length);
+                //Console.WriteLine(article.Content);
+                using (FileStream fsWriter = new FileStream(articlePath + fileId + doc.Title + ".txt", FileMode.Create, FileAccess.Write))
+                {
+                    byte[] buffer = System.Text.Encoding.Default.GetBytes(article.Content);
+                    fsWriter.Write(buffer, 0, buffer.Length);
+                }
             }
         }
 
         private static void Master_CustomParseLinkEvent3(CustomParseLinkEvent3Args args)
         {
+            /*sdau
             CustomParseLink_MainList(args, "(view).+?([0-9]{5})");//去除,下一步，拼写一个大的正则表达式就好
             CustomParseLink_NextPageSdau(args, "<a .+ href='(.+)'>下一页</a>", 1);//添加，下一步，拼写一个大的正则表达式就好
+            */
+            CustomParseLink_MainList(args, @"detail1.jsp.*id=\d*");//去除,下一步，拼写一个大的正则表达式就好
+            CustomParseLink_NextPageSdau(args, @"<A .*HREF=(.+) class.*>\s*下一页</A>", 1);//添加，下一步，拼写一个大的正则表达式就好
         }
 
         /// <summary>
@@ -215,7 +222,7 @@ namespace SimpleCrawler.Demo
             string url = "";
             if (args != null && !string.IsNullOrEmpty(args.Html))
             {
-                Regex regex = new Regex(patternStr);
+                Regex regex = new Regex(patternStr, RegexOptions.IgnoreCase);//忽略大小写
                 Match mat = regex.Match(args.Html);
                 if (mat.Success)
                 {
@@ -248,7 +255,7 @@ namespace SimpleCrawler.Demo
 
                 if (!string.IsNullOrEmpty(href))
                 {
-                    Regex regex = new Regex(patternStr);
+                    Regex regex = new Regex(patternStr, RegexOptions.IgnoreCase);//忽略大小写
                     Match mat = regex.Match(href);
                     if (mat.Success)
                     {

@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleCrawler.WinForm", "Si
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArgsTool.WinForm", "ArgsTool.WinForm\ArgsTool.WinForm.csproj", "{4914CC8C-0543-40A2-87E2-2BA84DC8160C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Browser", "Demo.Browser\Demo.Browser.csproj", "{D41ED106-E1F4-40BA-8C50-BDE55F47773C}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -43,6 +45,10 @@ Global
 		{4914CC8C-0543-40A2-87E2-2BA84DC8160C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4914CC8C-0543-40A2-87E2-2BA84DC8160C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4914CC8C-0543-40A2-87E2-2BA84DC8160C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D41ED106-E1F4-40BA-8C50-BDE55F47773C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D41ED106-E1F4-40BA-8C50-BDE55F47773C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D41ED106-E1F4-40BA-8C50-BDE55F47773C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D41ED106-E1F4-40BA-8C50-BDE55F47773C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

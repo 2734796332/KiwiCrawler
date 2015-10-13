@@ -130,5 +130,10 @@ namespace ArgsTool.WinForm
         {
             return Regex.IsMatch(str, @"^http://([\w-]+\.)+[\w-]+(/[\w-./?%&=]*)?$");
         }
+
+        private void txtUrl_MouseEnter(object sender, EventArgs e)
+        {
+            txtUrl.Select();
+        }
     }
 }
